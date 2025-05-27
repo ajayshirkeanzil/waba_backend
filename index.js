@@ -27,10 +27,20 @@ app.get("/test", async (req, res) => {
 
 app.use("/api", metaRoutes)
 
-
+//error middleware
+app.use((err,req,res,next)=>{
+  const statusCode= err.statusCode || 500;
+  const message = err.message || "Internal Server Error";
+  return res.json({
+    success:false,
+    statusCode,
+    message
+  })
+})
 
 const start = async () => {
   try {
+
     const connection = await pool.getConnection();
     console.log("✅ MySQL Connection Pool is established successfully.");
     connection.release(); // Release the connection back to the pool
